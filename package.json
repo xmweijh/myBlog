@@ -20,12 +20,17 @@
     "lint": "pnpm --filter backend lint && pnpm --filter frontend lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "clean": "rimraf backend/dist backend/node_modules frontend/dist frontend/node_modules node_modules",
+    "db:up": "docker-compose -f docker/docker-compose.yml up -d postgres",
+    "db:down": "docker-compose -f docker/docker-compose.yml down",
+    "db:logs": "docker-compose -f docker/docker-compose.yml logs -f postgres",
+    "db:generate": "pnpm --filter backend db:generate",
     "db:migrate": "pnpm --filter backend db:migrate",
     "db:seed": "pnpm --filter backend db:seed",
     "db:studio": "pnpm --filter backend db:studio",
-    "docker:dev": "docker-compose -f docker/docker-compose.dev.yml up -d",
-    "docker:prod": "docker-compose -f docker/docker-compose.prod.yml up -d",
-    "docker:down": "docker-compose -f docker/docker-compose.dev.yml down && docker-compose -f docker/docker-compose.prod.yml down"
+    "db:reset": "pnpm --filter backend db:reset",
+    "docker:dev": "docker-compose -f docker/docker-compose.yml up -d",
+    "docker:prod": "docker-compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f docker/docker-compose.yml down"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import { db } from './utils/database';
 
 // 加载环境变量
 dotenv.config();
@@ -34,25 +35,188 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // 健康检查端点
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development',
-  });
+app.get('/health', async (req, res) => {
+  try {
+    const dbConnected = await db.testConnection();
+    res.status(200).json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      database: dbConnected ? 'connected' : 'disconnected',
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      error: 'Database connection failed',
+    });
+  }
 });
 
-// API 路由
-app.use('/api', (req, res) => {
+// API 基础信息
+app.get('/api', (req, res) => {
   res.status(200).json({
     message: 'MyBlog API 服务正在运行',
     version: '1.0.0',
     endpoints: [
       'GET /health - 健康检查',
       'GET /api - API 信息',
+      'GET /api/stats - 数据统计',
+      'GET /api/articles - 文章列表',
+      'GET /api/categories - 分类列表',
+      'GET /api/tags - 标签列表',
     ],
   });
+});
+
+// 数据统计 API
+app.get('/api/stats', async (req, res) => {
+  try {
+    const client = db.getClient();
+    const stats = await Promise.all([
+      client.user.count(),
+      client.article.count(),
+      client.category.count(),
+      client.tag.count(),
+      client.comment.count(),
+      client.like.count(),
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        users: stats[0],
+        articles: stats[1],
+        categories: stats[2],
+        tags: stats[3],
+        comments: stats[4],
+        likes: stats[5],
+      },
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('获取统计数据失败:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取统计数据失败',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+// 文章列表 API
+app.get('/api/articles', async (req, res) => {
+  try {
+    const client = db.getClient();
+    const articles = await client.article.findMany({
+      include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          },
+        },
+        category: true,
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
+        _count: {
+          select: {
+            comments: true,
+            likes: true,
+          },
+        },
+      },
+      where: {
+        status: 'PUBLISHED',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 10,
+    });
+
+    res.json({
+      success: true,
+      data: articles,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('获取文章列表失败:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取文章列表失败',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+// 分类列表 API
+app.get('/api/categories', async (req, res) => {
+  try {
+    const client = db.getClient();
+    const categories = await client.category.findMany({
+      include: {
+        _count: {
+          select: {
+            articles: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    res.json({
+      success: true,
+      data: categories,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('获取分类列表失败:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取分类列表失败',
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+// 标签列表 API
+app.get('/api/tags', async (req, res) => {
+  try {
+    const client = db.getClient();
+    const tags = await client.tag.findMany({
+      include: {
+        _count: {
+          select: {
+            articles: true,
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    res.json({
+      success: true,
+      data: tags,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('获取标签列表失败:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取标签列表失败',
+      timestamp: new Date().toISOString(),
+    });
+  }
 });
 
 // 404 处理
