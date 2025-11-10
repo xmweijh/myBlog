@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import HomePage from '@/pages/HomePage'
 import AboutPage from '@/pages/AboutPage'
 import LoginPage from '@/pages/LoginPage'
+import ArticleListPage from '@/pages/ArticleListPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import { useAuthStore } from '@/stores/authStore'
 import { logout } from '@/services/authService'
@@ -54,6 +55,9 @@ function App() {
               <Link to="/" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
                 首页
               </Link>
+              <Link to="/articles" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
+                文章
+              </Link>
               <Link to="/about" className="text-gray-600 hover:text-gray-900 transition-colors font-medium">
                 关于
               </Link>
@@ -88,6 +92,7 @@ function App() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/articles" element={<ArticleListPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<NotFoundPage />} />
