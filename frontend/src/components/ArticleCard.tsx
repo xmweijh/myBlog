@@ -74,7 +74,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             <div className="flex items-center space-x-3">
               <span>👁 {article.viewCount}</span>
               <span>💬 {article._count.comments}</span>
-              <span>❤️ {article.likeCount}</span>
+              <span className="flex items-center space-x-1">
+                <span>❤️</span>
+                <span>{article.likeCount}</span>
+              </span>
             </div>
           </div>
 

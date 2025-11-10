@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import CommentItem from '@/components/CommentItem'
 import CommentForm from '@/components/CommentForm'
+import LikeButton from '@/components/LikeButton'
 import { getArticle } from '@/services/articleService'
 import { getArticleComments, deleteComment } from '@/services/commentService'
 import { formatFullDate } from '@/utils/date'
@@ -148,11 +149,17 @@ export default function ArticleDetailPage() {
               {article.category.name}
             </Link>
 
-            {/* 统计信息 */}
+            {/* 统计信息和点赞按钮 */}
             <div className="flex items-center space-x-4">
               <span>👁 {article.viewCount} 浏览</span>
               <span>💬 {article._count.comments} 评论</span>
-              <span>❤️ {article.likeCount} 点赞</span>
+              <LikeButton
+                articleId={article.id}
+                likeCount={article.likeCount}
+                onLikeChange={(newCount) => {
+                  setArticle((prev) => prev ? { ...prev, likeCount: newCount } : null)
+                }}
+              />
             </div>
           </div>
 
