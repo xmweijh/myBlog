@@ -4,6 +4,7 @@ import HomePage from '@/pages/HomePage'
 import AboutPage from '@/pages/AboutPage'
 import LoginPage from '@/pages/LoginPage'
 import ArticleListPage from '@/pages/ArticleListPage'
+import ArticleDetailPage from '@/pages/ArticleDetailPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import { useAuthStore } from '@/stores/authStore'
 import { logout } from '@/services/authService'
@@ -93,6 +94,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/articles" element={<ArticleListPage />} />
+          <Route path="/articles/:id" element={<ArticleDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<NotFoundPage />} />
