@@ -5,6 +5,7 @@ import AboutPage from '@/pages/AboutPage'
 import LoginPage from '@/pages/LoginPage'
 import ArticleListPage from '@/pages/ArticleListPage'
 import ArticleDetailPage from '@/pages/ArticleDetailPage'
+import UserProfilePage from '@/pages/UserProfilePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import { useAuthStore } from '@/stores/authStore'
 import { logout } from '@/services/authService'
@@ -65,10 +66,13 @@ function App() {
 
               {isAuthenticated && user ? (
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
+                  <Link
+                    to="/profile"
+                    className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+                  >
                     <img src={user.avatar} alt={user.username} className="w-8 h-8 rounded-full" />
                     <span className="text-gray-700 font-medium">{user.username}</span>
-                  </div>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium"
@@ -95,6 +99,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/articles" element={<ArticleListPage />} />
           <Route path="/articles/:id" element={<ArticleDetailPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<NotFoundPage />} />
