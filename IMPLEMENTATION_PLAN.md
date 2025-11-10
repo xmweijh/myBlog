@@ -77,9 +77,9 @@
 **目标**: 完成核心业务逻辑的后端API
 **成功标准**:
 - [x] 数据库设计和配置完成 ✅
-- [x] 基础API端点实现 ✅
-- [ ] 用户认证系统完成 (注册/登录/JWT)
-- [ ] 文章CRUD API完成
+- [x] 基础API端点实现 ✅  
+- [x] 用户认证系统完成 (注册/登录/JWT) ✅
+- [x] 文章CRUD API完成 ✅
 - [ ] 分类和标签API完成
 - [ ] 评论系统API完成
 - [ ] API文档自动生成
@@ -91,13 +91,36 @@
    - 完整的数据库 schema 设计
    - 用户、文章、分类、标签、评论、点赞模型
    - 数据库迁移和种子数据填充
-
+   
 2. ✅ **基础API接口实现**
    - 健康检查端点 (含数据库连接状态)
    - 数据统计API (/api/stats)
    - 文章列表API (/api/articles)
-   - 分类列表API (/api/categories)
+   - 分类列表API (/api/categories) 
    - 标签列表API (/api/tags)
+
+3. ✅ **用户认证系统**
+   - JWT令牌生成和验证
+   - 密码加密 (bcrypt, 12轮加盐)
+   - 用户注册API (邮箱/用户名唯一性验证)
+   - 用户登录API (密码验证、账号状态检查)
+   - 获取当前用户信息API
+   - 更新用户资料API
+   - 修改密码API
+   - 认证中间件 (必须认证、可选认证)
+   - 权限中间件 (基于角色的访问控制)
+
+4. ✅ **文章管理API**
+   - 创建文章 (POST /api/articles)
+   - 获取文章列表 (GET /api/articles，支持分页、搜索、筛选、排序)
+   - 获取文章详情 (GET /api/articles/:id，包含评论和点赞)
+   - 更新文章 (PUT /api/articles/:id，权限控制)
+   - 删除文章 (DELETE /api/articles/:id，级联删除)
+   - 获取用户文章列表 (GET /api/articles/user/:userId)
+   - 全文搜索 (标题、摘要、内容)
+   - 分类筛选、标签筛选、作者筛选
+   - 浏览量统计、排序功能
+   - 权限控制 (作者/管理员)
 
 **数据库统计**:
 - 👥 用户: 3 个 (包含管理员和测试用户)
@@ -108,11 +131,9 @@
 - 👍 点赞: 5 个
 
 **进行中任务**:
-3. 🚧 实现用户认证系统 (JWT + bcrypt)
-4. ⏳ 实现文章管理API
-5. ⏳ 实现分类和标签管理API
+5. 🚧 实现分类和标签管理API
 6. ⏳ 实现评论系统API
-7. ⏳ 添加API参数验证和错误处理
+7. ⏳ 实现点赞功能API
 8. ⏳ 集成Swagger文档
 9. ⏳ 编写API测试用例
 
@@ -122,6 +143,16 @@
 - ✅ GET /api/articles - 文章数据完整
 - ✅ GET /api/categories - 分类列表正常
 - ✅ GET /api/tags - 标签列表正常
+- ✅ POST /api/auth/register - 用户注册成功
+- ✅ POST /api/auth/login - 用户登录成功
+- ✅ GET /api/auth/me - 获取用户信息成功（需认证）
+- ✅ PUT /api/auth/profile - 更新资料功能正常
+- ✅ PUT /api/auth/password - 修改密码功能正常
+- ✅ POST /api/articles - 创建文章成功
+- ✅ GET /api/articles - 获取文章列表成功（支持分页）
+- ✅ GET /api/articles/:id - 获取文章详情成功
+- ✅ GET /api/articles?search=keyword - 文章搜索功能正常
+- ✅ GET /api/articles?categoryId=id - 分类筛选功能正常
 
 **状态**: 进行中 🚧
 

@@ -6,6 +6,8 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { db } from './utils/database';
+import authRoutes from './routes/authRoutes';
+import articleRoutes from './routes/articleRoutes';
 
 // 加载环境变量
 dotenv.config();
@@ -54,6 +56,12 @@ app.get('/health', async (req, res) => {
   }
 });
 
+// 认证路由
+app.use('/api/auth', authRoutes);
+
+// 文章路由
+app.use('/api/articles', articleRoutes);
+
 // API 基础信息
 app.get('/api', (req, res) => {
   res.status(200).json({
@@ -66,6 +74,17 @@ app.get('/api', (req, res) => {
       'GET /api/articles - 文章列表',
       'GET /api/categories - 分类列表',
       'GET /api/tags - 标签列表',
+      'POST /api/auth/register - 用户注册',
+      'POST /api/auth/login - 用户登录',
+      'GET /api/auth/me - 获取当前用户信息',
+      'PUT /api/auth/profile - 更新用户资料',
+      'PUT /api/auth/password - 修改密码',
+      'POST /api/articles - 创建文章',
+      'GET /api/articles - 获取文章列表',
+      'GET /api/articles/:id - 获取文章详情',
+      'PUT /api/articles/:id - 更新文章',
+      'DELETE /api/articles/:id - 删除文章',
+      'GET /api/articles/user/:userId - 获取用户文章列表',
     ],
   });
 });
