@@ -8,6 +8,9 @@ import dotenv from 'dotenv';
 import { db } from './utils/database';
 import authRoutes from './routes/authRoutes';
 import articleRoutes from './routes/articleRoutes';
+import categoryRoutes from './routes/categoryRoutes';
+import tagRoutes from './routes/tagRoutes';
+import commentRoutes from './routes/commentRoutes';
 
 // 加载环境变量
 dotenv.config();
@@ -61,6 +64,15 @@ app.use('/api/auth', authRoutes);
 
 // 文章路由
 app.use('/api/articles', articleRoutes);
+
+// 分类路由
+app.use('/api/categories', categoryRoutes);
+
+// 标签路由
+app.use('/api/tags', tagRoutes);
+
+// 评论路由
+app.use('/api/comments', commentRoutes);
 
 // API 基础信息
 app.get('/api', (req, res) => {

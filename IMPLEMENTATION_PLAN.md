@@ -80,8 +80,9 @@
 - [x] 基础API端点实现 ✅  
 - [x] 用户认证系统完成 (注册/登录/JWT) ✅
 - [x] 文章CRUD API完成 ✅
-- [ ] 分类和标签API完成
-- [ ] 评论系统API完成
+- [x] 分类和标签API完成 ✅
+- [x] 评论系统API完成 ✅
+- [ ] 点赞功能API完成
 - [ ] API文档自动生成
 - [ ] 单元测试覆盖率>80%
 
@@ -122,6 +123,28 @@
    - 浏览量统计、排序功能
    - 权限控制 (作者/管理员)
 
+5. ✅ **分类和标签管理API**
+   - 创建分类 (POST /api/categories，仅管理员)
+   - 获取分类列表 (GET /api/categories)
+   - 获取分类详情 (GET /api/categories/:id，包含该分类的文章)
+   - 更新分类 (PUT /api/categories/:id，仅管理员)
+   - 删除分类 (DELETE /api/categories/:id，仅管理员)
+   - 创建标签 (POST /api/tags，仅管理员)
+   - 获取标签列表 (GET /api/tags)
+   - 获取标签详情 (GET /api/tags/:id，包含该标签的文章)
+   - 更新标签 (PUT /api/tags/:id，仅管理员)
+   - 删除标签 (DELETE /api/tags/:id，仅管理员)
+   - 文章数量统计
+
+6. ✅ **评论系统API**
+   - 创建评论 (POST /api/comments)
+   - 创建回复评论 (支持嵌套回复)
+   - 获取文章评论列表 (GET /api/comments/article/:articleId，支持分页)
+   - 获取评论详情 (GET /api/comments/:id，包含所有回复)
+   - 更新评论 (PUT /api/comments/:id，权限控制)
+   - 删除评论 (DELETE /api/comments/:id，级联删除回复)
+   - 权限控制 (作者/管理员)
+
 **数据库统计**:
 - 👥 用户: 3 个 (包含管理员和测试用户)
 - 📝 文章: 4 篇 (涵盖React、Node.js、TypeScript等主题)
@@ -131,18 +154,17 @@
 - 👍 点赞: 5 个
 
 **进行中任务**:
-5. 🚧 实现分类和标签管理API
-6. ⏳ 实现评论系统API
-7. ⏳ 实现点赞功能API
+7. 🚧 实现点赞功能API
 8. ⏳ 集成Swagger文档
 9. ⏳ 编写API测试用例
+10. ⏳ 前端开发 (React + TypeScript)
 
 **API端点测试结果**:
 - ✅ GET /health - 数据库连接正常
 - ✅ GET /api/stats - 统计数据正确
 - ✅ GET /api/articles - 文章数据完整
-- ✅ GET /api/categories - 分类列表正常
-- ✅ GET /api/tags - 标签列表正常
+- ✅ GET /api/categories - 分类列表正常（5个分类）
+- ✅ GET /api/tags - 标签列表正常（12个标签）
 - ✅ POST /api/auth/register - 用户注册成功
 - ✅ POST /api/auth/login - 用户登录成功
 - ✅ GET /api/auth/me - 获取用户信息成功（需认证）
@@ -153,6 +175,13 @@
 - ✅ GET /api/articles/:id - 获取文章详情成功
 - ✅ GET /api/articles?search=keyword - 文章搜索功能正常
 - ✅ GET /api/articles?categoryId=id - 分类筛选功能正常
+- ✅ POST /api/categories - 创建分类成功（仅管理员）
+- ✅ GET /api/categories/:id - 获取分类详情成功（包含文章列表）
+- ✅ POST /api/tags - 创建标签成功（仅管理员）
+- ✅ GET /api/tags/:id - 获取标签详情成功（包含文章列表）
+- ✅ POST /api/comments - 创建评论成功
+- ✅ POST /api/comments - 创建回复评论成功（支持嵌套）
+- ✅ GET /api/comments/article/:id - 获取评论列表成功（包含回复）
 
 **状态**: 进行中 🚧
 
