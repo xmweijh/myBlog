@@ -7,6 +7,7 @@ import RegisterPage from '@/pages/RegisterPage'
 import ArticleListPage from '@/pages/ArticleListPage'
 import ArticleDetailPage from '@/pages/ArticleDetailPage'
 import UserProfilePage from '@/pages/UserProfilePage'
+import AdminPage from '@/pages/AdminPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import { useAuthStore } from '@/stores/authStore'
 import { logout } from '@/services/authService'
@@ -74,6 +75,14 @@ function App() {
                     <img src={user.avatar} alt={user.username} className="w-8 h-8 rounded-full" />
                     <span className="text-gray-700 font-medium">{user.username}</span>
                   </Link>
+                  {user.role === 'ADMIN' && (
+                    <Link
+                      to="/admin"
+                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+                    >
+                      管理后台
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium"
@@ -101,6 +110,7 @@ function App() {
           <Route path="/articles" element={<ArticleListPage />} />
           <Route path="/articles/:id" element={<ArticleDetailPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
