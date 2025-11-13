@@ -1,41 +1,13 @@
-import { Router } from 'express';
-import * as categoryController from '../controllers/categoryController';
-import { authenticate, requireAdmin } from '../middleware/auth';
-const router = Router();
+import { Router } from 'express'
+import * as categoryController from '../controllers/categoryController'
+import { requireAuth, requireAdmin } from '../middleware/auth'
 
-/**
- * @route   POST /api/categories
- * @desc    创建分类
- * @access  Private (管理员)
- */
-router.post('/', authenticate, requireAdmin, categoryController.createCategory);
+const router = Router()
 
-/**
- * @route   GET /api/categories
- * @desc    获取分类列表
- * @access  Public
- */
-router.get('/', categoryController.listCategories);
+router.get('/', categoryController.listCategories)
+router.get('/:id', categoryController.getCategory)
+router.post('/', requireAuth, requireAdmin, categoryController.createCategory)
+router.put('/:id', requireAuth, requireAdmin, categoryController.updateCategory)
+router.delete('/:id', requireAuth, requireAdmin, categoryController.deleteCategory)
 
-/**
- * @route   GET /api/categories/:id
- * @desc    获取分类详情
- * @access  Public
- */
-router.get('/:id', categoryController.getCategory);
-
-/**
- * @route   PUT /api/categories/:id
- * @desc    更新分类
- * @access  Private (管理员)
- */
-router.put('/:id', authenticate, requireAdmin, categoryController.updateCategory);
-
-/**
- * @route   DELETE /api/categories/:id
- * @desc    删除分类
- * @access  Private (管理员)
- */
-router.delete('/:id', authenticate, requireAdmin, categoryController.deleteCategory);
-
-export default router;
+export default router
