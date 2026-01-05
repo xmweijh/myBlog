@@ -116,6 +116,12 @@ function App() {
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/articles" element={<AdminArticlesPage />} />
+          <Route path="/admin/articles/create" element={<AdminArticleForm />} />
+          <Route path="/admin/articles/:id/edit" element={<AdminArticleForm />} />
+          <Route path="/admin/categories/create" element={<AdminCategoryForm />} />
+          <Route path="/admin/categories/:id/edit" element={<AdminCategoryForm />} />
+          <Route path="/admin/tags/create" element={<AdminTagForm />} />
+          <Route path="/admin/tags/:id/edit" element={<AdminTagForm />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
