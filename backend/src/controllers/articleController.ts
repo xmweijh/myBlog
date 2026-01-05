@@ -277,9 +277,11 @@ export async function listArticles(req: Request, res: Response): Promise<void> {
     // 构建查询条件
     const where: any = {};
 
-    // 默认只显示已发布的文章，除非是查看自己的文章
+    // 默认只显示已发布的文章，除非是查看自己的文章或管理员
     if (!status) {
-      where.status = 'PUBLISHED';
+      if (req.user?.role !== 'ADMIN') {
+        where.status = 'PUBLISHED';
+      }
     } else if (status === 'DRAFT' && !req.user) {
       // 未登录用户不能查看草稿
       where.status = 'PUBLISHED';

@@ -8,6 +8,7 @@ import ArticleListPage from '@/pages/ArticleListPage'
 import ArticleDetailPage from '@/pages/ArticleDetailPage'
 import UserProfilePage from '@/pages/UserProfilePage'
 import AdminPage from '@/pages/AdminPage'
+import AdminArticlesPage from '@/pages/admin/AdminArticlesPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import { useAuthStore } from '@/stores/authStore'
 import { logout } from '@/services/authService'
@@ -111,6 +112,7 @@ function App() {
           <Route path="/articles/:id" element={<ArticleDetailPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/articles" element={<AdminArticlesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

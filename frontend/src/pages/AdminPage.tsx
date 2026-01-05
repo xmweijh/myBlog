@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
+import { getDashboardStats } from '@/services/adminService'
+
 interface Stats {
   totalArticles: number
   totalCategories: number
@@ -23,7 +25,7 @@ export default function AdminPage() {
   })
   const [isLoading, setIsLoading] = useState(true)
 
-  // 检查权限
+  // 检查权限并加载数据
   useEffect(() => {
     if (!isAuthenticated || !user) {
       navigate('/login')
@@ -35,18 +37,25 @@ export default function AdminPage() {
       return
     }
 
-    // 模拟加载统计数据
-    setTimeout(() => {
-      setStats({
-        totalArticles: 4,
-        totalCategories: 5,
-        totalTags: 12,
-        totalUsers: 3,
-        totalComments: 4,
-        totalLikes: 5,
-      })
-      setIsLoading(false)
-    }, 500)
+    const loadStats = async () => {
+      try {
+        const response = await getDashboardStats()
+        setStats({
+          totalArticles: response.data.articles,
+          totalCategories: response.data.categories,
+          totalTags: response.data.tags,
+          totalUsers: response.data.users,
+          totalComments: response.data.comments,
+          totalLikes: response.data.likes,
+        })
+      } catch (err) {
+        console.error('加载统计数据失败:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadStats()
   }, [isAuthenticated, user, navigate])
 
   if (!isAuthenticated || !user || user.role !== 'ADMIN') {
