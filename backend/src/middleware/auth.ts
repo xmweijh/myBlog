@@ -14,7 +14,7 @@ declare global {
 /**
  * 认证中间件 - 验证JWT令牌
  */
-export async function authenticate(
+export async function requireAuth(
   req: Request,
   res: Response,
   next: NextFunction
@@ -86,7 +86,7 @@ export async function authenticate(
 /**
  * 可选认证中间件 - 如果有令牌则验证，没有则继续
  */
-export async function optionalAuthenticate(
+export async function optionalAuth(
   req: Request,
   res: Response,
   next: NextFunction
