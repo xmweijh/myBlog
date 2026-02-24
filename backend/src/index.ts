@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 3001;
 // 基础中间件
 app.use(helmet()); // 安全头
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true,
 })); // 跨域支持
 app.use(compression()); // 响应压缩
