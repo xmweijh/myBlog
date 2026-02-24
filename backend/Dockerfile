@@ -14,6 +14,10 @@ RUN npm ci
 # 复制源代码
 COPY . .
 
+# 构建时提供数据库连接字符串（Prisma generate 需要）
+ARG DATABASE_URL="file:./dev.db"
+ENV DATABASE_URL=$DATABASE_URL
+
 # 生成 Prisma Client
 RUN npx prisma generate
 
@@ -38,6 +42,13 @@ RUN npm ci --only=production
 # 复制构建产物
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+
+# 复制 SQLite 数据库目录（用于开发默认数据）
+RUN mkdir -p /app/data
+
+# 构建时提供数据库连接字符串（Prisma generate 需要）
+ARG DATABASE_URL="file:./prisma/dev.db"
+ENV DATABASE_URL=$DATABASE_URL
 
 # 再次生成 Prisma Client (针对运行环境)
 RUN npx prisma generate

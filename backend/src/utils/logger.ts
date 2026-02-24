@@ -1,5 +1,9 @@
+import fs from 'fs';
 import winston from 'winston';
 import path from 'path';
+
+const logDir = path.join(process.cwd(), 'logs');
+fs.mkdirSync(logDir, { recursive: true });
 
 // 定义日志级别颜色
 const colors = {
