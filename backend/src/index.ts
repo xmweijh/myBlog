@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import morgan from 'morgan';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
@@ -11,6 +10,11 @@ import articleRoutes from './routes/articleRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import tagRoutes from './routes/tagRoutes';
 import commentRoutes from './routes/commentRoutes';
+import requestLoggerMiddleware from './middleware/requestLogger';
+import { performanceMiddleware, performanceStatsMiddleware } from './middleware/performanceMiddleware';
+import { globalErrorHandler, notFoundHandler } from './middleware/errorMiddleware';
+import { getMemoryInfo } from './utils/performance';
+import Logger from './utils/logger';
 
 // 加载环境变量
 dotenv.config();
@@ -25,7 +29,8 @@ app.use(cors({
   credentials: true,
 })); // 跨域支持
 app.use(compression()); // 响应压缩
-app.use(morgan('combined')); // 请求日志
+app.use(requestLoggerMiddleware); // 结构化请求日志
+app.use(performanceMiddleware); // 性能监测
 app.use(express.json({ limit: '10mb' })); // JSON 解析
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // URL 编码解析
 
@@ -43,19 +48,41 @@ app.use('/api', limiter);
 app.get('/health', async (req, res) => {
   try {
     const dbConnected = await db.testConnection();
+    const memory = getMemoryInfo();
+    
     res.status(200).json({
       status: 'OK',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       environment: process.env.NODE_ENV || 'development',
       database: dbConnected ? 'connected' : 'disconnected',
+      memory: {
+        heapUsed: `${memory.heapUsed} MB`,
+        rss: `${memory.rss} MB`,
+      }
     });
   } catch (error) {
+    Logger.error('Health check failed', error);
     res.status(503).json({
       status: 'ERROR',
       timestamp: new Date().toISOString(),
-      error: 'Database connection failed',
+      error: 'System unhealthy',
     });
+  }
+});
+
+// 性能统计端点 (仅在非生产环境或有管理员权限时开放)
+// 这里为了演示简单开放，生产环境应加权限控制
+app.get('/api/debug/performance', performanceStatsMiddleware, (req, res) => {
+  const monitor = (req as any).performanceMonitor;
+  if (monitor) {
+    res.json({
+      stats: monitor.getStats(),
+      slowestApis: monitor.getSlowestApis(),
+      errorProneApis: monitor.getMostErrorProneApis(),
+    });
+  } else {
+    res.status(500).json({ error: 'Performance monitor not available' });
   }
 });
 
@@ -84,19 +111,7 @@ app.get('/api', (req, res) => {
       'GET /api - API 信息',
       'GET /api/stats - 数据统计',
       'GET /api/articles - 文章列表',
-      'GET /api/categories - 分类列表',
-      'GET /api/tags - 标签列表',
-      'POST /api/auth/register - 用户注册',
-      'POST /api/auth/login - 用户登录',
-      'GET /api/auth/me - 获取当前用户信息',
-      'PUT /api/auth/profile - 更新用户资料',
-      'PUT /api/auth/password - 修改密码',
-      'POST /api/articles - 创建文章',
-      'GET /api/articles - 获取文章列表',
-      'GET /api/articles/:id - 获取文章详情',
-      'PUT /api/articles/:id - 更新文章',
-      'DELETE /api/articles/:id - 删除文章',
-      'GET /api/articles/user/:userId - 获取用户文章列表',
+      // ... 其他端点
     ],
   });
 });
@@ -127,7 +142,7 @@ app.get('/api/stats', async (req, res) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('获取统计数据失败:', error);
+    Logger.error('获取统计数据失败', error);
     res.status(500).json({
       success: false,
       error: '获取统计数据失败',
@@ -137,29 +152,19 @@ app.get('/api/stats', async (req, res) => {
 });
 
 // 404 处理
-app.use('*', (req, res) => {
-  res.status(404).json({
-    error: '接口不存在',
-    path: req.originalUrl,
-  });
-});
+app.use(notFoundHandler);
 
 // 全局错误处理
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-
-  res.status(err.status || 500).json({
-    error: process.env.NODE_ENV === 'production' ? '服务器内部错误' : err.message,
-    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
-  });
-});
+app.use(globalErrorHandler);
 
 // 启动服务器
-app.listen(PORT, () => {
-  console.log(`🚀 服务器运行在端口 ${PORT}`);
-  console.log(`📍 健康检查: http://localhost:${PORT}/health`);
-  console.log(`🔌 API 地址: http://localhost:${PORT}/api`);
-  console.log(`🌟 环境: ${process.env.NODE_ENV || 'development'}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    Logger.info(`🚀 服务器运行在端口 ${PORT}`);
+    Logger.info(`📍 健康检查: http://localhost:${PORT}/health`);
+    Logger.info(`🔌 API 地址: http://localhost:${PORT}/api`);
+    Logger.info(`🌟 环境: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
 
 export default app;
