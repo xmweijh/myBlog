@@ -286,7 +286,7 @@ export class Validators {
       sortOrder = 'desc'; // 使用默认值
     }
 
-    return { sortBy, sortOrder };
+    return { sortBy, sortOrder: sortOrder as 'asc' | 'desc' };
   }
 
   /**
