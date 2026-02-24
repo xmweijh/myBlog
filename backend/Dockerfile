@@ -9,7 +9,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # 安装所有依赖（包括devDependencies，因为需要编译TS）
-RUN npm ci
+RUN npm install
 
 # 复制源代码
 COPY . .
@@ -37,7 +37,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 
 # 只安装生产依赖
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 # 复制构建产物
 COPY --from=builder /app/dist ./dist
