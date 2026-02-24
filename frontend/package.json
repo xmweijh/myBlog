@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -28,7 +28,9 @@
     "react-query": "^3.39.3",
     "react-markdown": "^9.0.1",
     "remark-gfm": "^4.0.0",
-    "react-syntax-highlighter": "^15.5.0"
+    "react-syntax-highlighter": "^15.5.0",
+    "lodash.castarray": "^4.4.0",
+    "lodash.isplainobject": "^4.0.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
@@ -44,6 +46,7 @@
     "vite": "^5.0.0",
     "tailwindcss": "^3.3.6",
     "autoprefixer": "^10.4.16",
+    "normalize-range": "^0.1.2",
     "postcss": "^8.4.32",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
