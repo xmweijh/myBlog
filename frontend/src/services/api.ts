@@ -1,6 +1,9 @@
 import axios, { AxiosInstance, AxiosError } from 'axios'
 // API 基础配置
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+const fallbackApiUrl = typeof window !== 'undefined'
+  ? `http://${window.location.hostname}:3000`
+  : 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_API_URL || fallbackApiUrl
 
 // 创建 axios 实例
 const apiClient: AxiosInstance = axios.create({
